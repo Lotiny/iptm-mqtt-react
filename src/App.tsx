@@ -135,8 +135,8 @@ const App = () => {
 
   return (
     <div className="container">
-      <h2>Sensor Dashboard</h2>
-
+      <h2>Dashboard</h2>
+      
       <div className="real-time-container">
         <h3>Real-Time Data</h3>
         {realTimeData ? (
@@ -159,15 +159,17 @@ const App = () => {
         </p>
       </div>
 
-      <label>Select Date: </label>
-      <input
-        type="date"
-        value={selectedDate.toISOString().split("T")[0]}
-        onChange={(e) => setSelectedDate(new Date(e.target.value))}
-      />
-      <button className="update-btn" onClick={fetchData} disabled={isLoading}>
-        {isLoading ? "Loading..." : "Fetch Data"}
-      </button>
+      <div className="fetch-data-container">
+        <label>Select Date: </label>
+        <input
+          type="date"
+          value={selectedDate.toISOString().split("T")[0]}
+          onChange={(e) => setSelectedDate(new Date(e.target.value))}
+        />
+        <button className="update-btn" onClick={fetchData} disabled={isLoading}>
+          {isLoading ? "Loading..." : "Fetch Data"}
+        </button>
+      </div>
       <div className="chart-container">
         {historicalData.length > 0 ? (
           <Line data={chartData} />
@@ -175,6 +177,64 @@ const App = () => {
           <p>No historical data available</p>
         )}
       </div>
+      {historicalData.length > 0 && (
+        <div className="stats-container">
+          <h3>Daily Summary</h3>
+          <div className="stats-content">
+            <div className="stats-column">
+              <h4>🌡️ Temperature</h4>
+              <p>
+                Highest:{" "}
+                <strong>
+                  {Math.max(...historicalData.map((d) => d.temperature))}°C
+                </strong>
+              </p>
+              <p>
+                Lowest:{" "}
+                <strong>
+                  {Math.min(...historicalData.map((d) => d.temperature))}°C
+                </strong>
+              </p>
+              <p>
+                Average:{" "}
+                <strong>
+                  {(
+                    historicalData.reduce((sum, d) => sum + d.temperature, 0) /
+                    historicalData.length
+                  ).toFixed(2)}
+                  °C
+                </strong>
+              </p>
+            </div>
+
+            <div className="stats-column">
+              <h4>💧 Humidity</h4>
+              <p>
+                Highest:{" "}
+                <strong>
+                  {Math.max(...historicalData.map((d) => d.humidity))}%
+                </strong>
+              </p>
+              <p>
+                Lowest:{" "}
+                <strong>
+                  {Math.min(...historicalData.map((d) => d.humidity))}%
+                </strong>
+              </p>
+              <p>
+                Average:{" "}
+                <strong>
+                  {(
+                    historicalData.reduce((sum, d) => sum + d.humidity, 0) /
+                    historicalData.length
+                  ).toFixed(2)}
+                  %
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
