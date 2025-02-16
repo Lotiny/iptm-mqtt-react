@@ -59,15 +59,17 @@ const App = () => {
 
     client.on("message", (topic, message) => {
       if (topic === MQTT_TOPIC) {
+        const rawMessage = message.toString();
+
         try {
-          const newData = JSON.parse(message.toString());
+          const newData = JSON.parse(rawMessage);
           setRealTimeData(newData);
           setLastUpdate(new Date().toLocaleTimeString());
         } catch (error) {
           console.error("Error parsing MQTT message:", error);
         }
       }
-    });
+    });    
 
     client.on("error", (err) => {
       console.error("MQTT Connection Error:", err);
@@ -75,7 +77,6 @@ const App = () => {
     });
 
     return () => {
-      console.log("Disconnecting from MQTT...");
       client.end();
     };
   }, []);
@@ -86,9 +87,9 @@ const App = () => {
         <h2 className="text-3xl font-bold mb-6">Dashboard</h2>
 
         <div className="bg-white/5 backdrop-blur-md shadow-md p-6 rounded-xl mb-6 w-full">
-          <h3 className="text-xl font-semibold">Real-Time Data</h3>
+          <h3 className="text-xl font-bold pb-5">Real-Time Data</h3>
           {realTimeData ? (
-            <div className="text-lg font-medium space-y-2">
+            <div className="text-lg font-small space-y-2">
               <p>
                 🌡️ Temperature: <strong>{realTimeData.temperature}°C</strong>
               </p>
@@ -102,7 +103,7 @@ const App = () => {
           ) : (
             <p>No real-time data received yet...</p>
           )}
-          <p className="font-bold mt-3 text-yellow-400">
+          <p className="font-bold mt-5 text-yellow-400">
             MQTT Status: {mqttConnected ? "🟢 Connected" : "🔴 Disconnected"}
           </p>
         </div>
@@ -141,15 +142,15 @@ const App = () => {
         {historicalData.length > 0 && (
           <div className="w-full max-w-2xl mx-auto bg-white/5 rounded-xl shadow-md p-6 mt-6 text-center">
             <h3 className="text-xl font-semibold pb-4">Daily Summary</h3>
-            <div className="flex justify-between gap-6 text-left">
+            <div className="flex justify-between gap-6 text-center">
               <div className="flex-1 bg-white/10 p-5 rounded-lg shadow-md">
-                <h4 className="text-lg font-semibold">🌡️ Temperature</h4>
+                <h4 className="text-lg font-semibold pb-3">🌡️ Temperature</h4>
                 <p>
                   Highest:{" "}
                   <strong>
                     {Math.max(
                       ...historicalData.map((d) => d.temperature)
-                    ).toFixed(2)}
+                    ).toFixed(1)}
                     °C
                   </strong>
                 </p>
@@ -158,7 +159,7 @@ const App = () => {
                   <strong>
                     {Math.min(
                       ...historicalData.map((d) => d.temperature)
-                    ).toFixed(2)}
+                    ).toFixed(1)}
                     °C
                   </strong>
                 </p>
@@ -170,13 +171,13 @@ const App = () => {
                         (sum, d) => sum + d.temperature,
                         0
                       ) / historicalData.length
-                    ).toFixed(2)}
+                    ).toFixed(1)}
                     °C
                   </strong>
                 </p>
               </div>
               <div className="flex-1 bg-white/10 p-5 rounded-lg shadow-md">
-                <h4 className="text-lg font-semibold">💧 Humidity</h4>
+                <h4 className="text-lg font-semibold pb-3">💧 Humidity</h4>
                 <p>
                   Highest:{" "}
                   <strong>
@@ -201,7 +202,7 @@ const App = () => {
                     {(
                       historicalData.reduce((sum, d) => sum + d.humidity, 0) /
                       historicalData.length
-                    ).toFixed(2)}
+                    ).toFixed(1)}
                     %
                   </strong>
                 </p>
