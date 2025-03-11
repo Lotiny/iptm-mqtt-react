@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ClipLoader } from "react-spinners";
+import {useEffect, useState} from "react";
+import {ClipLoader} from "react-spinners";
 import mqtt from "mqtt";
 import LineChart from "./components/LineChart";
 import "./index.css";
@@ -61,14 +61,11 @@ const App = () => {
   // useEffect hook to manage the MQTT connection and message handling
   useEffect(() => {
     // Create an MQTT client and connect to the MQTT broker using environment variables
-    const client = mqtt.connect(
-      import.meta.env.VITE_MQTT_HOST,
-      {
-        username: import.meta.env.VITE_MQTT_USERNAME,
-        password: import.meta.env.VITE_MQTT_PASSWORD,
-        protocolVersion: 5,
-      }
-    );
+    const client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
+      username: import.meta.env.VITE_MQTT_USERNAME,
+      password: import.meta.env.VITE_MQTT_PASSWORD,
+      protocolVersion: 5,
+    });
 
     // Event listener for successful MQTT connection
     client.on("connect", () => {
@@ -124,10 +121,12 @@ const App = () => {
           {realTimeData ? (
             <div className="text-lg font-small space-y-2">
               <p>
-                🌡️ Temperature: <strong>{realTimeData.temperature}°C</strong>
+                🌡️ Temperature:{" "}
+                <strong>{(realTimeData.temperature / 10).toFixed(1)}°C</strong>
               </p>
               <p>
-                💧 Humidity: <strong>{realTimeData.humidity}%</strong>
+                💧 Humidity:{" "}
+                <strong>{(realTimeData.humidity / 10).toFixed(1)}%</strong>
               </p>
               <p>
                 🕒 Last Updated: <strong>{lastUpdate}</strong>
@@ -159,7 +158,7 @@ const App = () => {
             {/* Display loading indicator or "Fetch Data" text */}
             {isLoading ? (
               <>
-                Loading <ClipLoader size={15} />
+                Loading <ClipLoader size={15}/>
               </>
             ) : (
               "Fetch Data"
@@ -171,7 +170,7 @@ const App = () => {
         <div className="w-full max-w-2xl mx-auto bg-white/5 rounded-xl shadow-md p-6 mt-6">
           {/* Display the LineChart component if historical data is available, otherwise show a message */}
           {historicalData.length > 0 ? (
-            <LineChart historicalData={historicalData} />
+            <LineChart historicalData={historicalData}/>
           ) : (
             <p>No historical data available</p>
           )}
